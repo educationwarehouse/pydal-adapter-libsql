@@ -1,5 +1,11 @@
 # rqlite for pyDAL
 
+From the [rqlite](https://rqlite.io) docs:
+> rqlite is an easy-to-use, lightweight, distributed relational database, which uses SQLite as its storage engine.
+
+See [their GitHub page](https://github.com/rqlite/rqlite) for more info about deploying and managing an rqlite cluster, interacting with the cli or the HTTP
+API directly.
+
 ## Example usage:
 
 ```python
@@ -18,7 +24,8 @@ for [pyDAL](http://www.web2py.com/books/default/chapter/29/06/the-database-abstr
 
 ## Limitations
 
-As specified in the [docs](https://github.com/rqlite/pyrqlite#limitations) of `pyrqlite` (which is the driver behind this
+As specified in the [docs](https://github.com/rqlite/pyrqlite#limitations) of `pyrqlite` (which is the driver behind
+this
 adapter):
 > Transactions are not supported
 
