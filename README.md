@@ -8,9 +8,9 @@ from pydal import DAL
 # required to register rqlite://
 import pydal_rqlite
 
-# db = DAL("rqlite://user:pass@localhost:4001", folder="database", driver_args={'https': False})
 db = DAL("rqlite://localhost", folder="database")
-# db = DAL("sqlite://:memory:", folder="database")
+# or with basic auth/custom port/https:
+# db = DAL("rqlite://user:pass@localhost:4001", folder="database", driver_args={'https': True})
 ```
 
 `db` should now support the same features the `sqlite3` driver

@@ -1,6 +1,7 @@
 from pydal import DAL
 
-# required!!
+# noinspection PyUnresolvedReferences
+# import is required, even though pacakge is not used, to set up rqlite:// for pyDAL
 import pydal_rqlite
 
 # db = DAL("rqlite://user:pass@localhost:4001", folder="database", driver_args={'https': False})
