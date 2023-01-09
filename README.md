@@ -6,7 +6,7 @@ Example usage:
 from pydal import DAL
 
 # required to register rqlite://
-from adapter_rqlite import Rqlite
+import pydal_rqlite
 
 # db = DAL("rqlite://user:pass@localhost:4001", folder="database", driver_args={'https': False})
 db = DAL("rqlite://localhost", folder="database")
