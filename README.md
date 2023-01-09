@@ -18,7 +18,7 @@ for [pyDAL](http://www.web2py.com/books/default/chapter/29/06/the-database-abstr
 
 ## Limitations
 
-As specified in the [docs](https://github.com/rqlite/pyrqlite#id6) of `pyrqlite` (which is the driver behind this
+As specified in the [docs](https://github.com/rqlite/pyrqlite#limitations) of `pyrqlite` (which is the driver behind this
 adapter):
 > Transactions are not supported
 
