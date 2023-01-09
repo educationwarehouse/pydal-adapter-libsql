@@ -3,5 +3,6 @@ __pycache__
 *.pyc
 database/
 docker-compose.yml
-main.py
 venv/
+dist/
+*.egg-info
