@@ -1,6 +1,6 @@
 # rqlite for pyDAL
 
-Example usage:
+## Example usage:
 
 ```python
 from pydal import DAL
@@ -15,3 +15,12 @@ db = DAL("rqlite://localhost", folder="database")
 
 `db` should now support the same features the `sqlite3` driver
 for [pyDAL](http://www.web2py.com/books/default/chapter/29/06/the-database-abstraction-layer) does.
+
+## Limitations
+
+As specified in the [docs](https://github.com/rqlite/pyrqlite#id6) of `pyrqlite` (which is the driver behind this
+adapter):
+> Transactions are not supported
+
+This is due to the fact rqlite does not really support transactions.
+`db.commit()` and `db.rollback()` will not raise an exception, but do nothing instead (`pass`).

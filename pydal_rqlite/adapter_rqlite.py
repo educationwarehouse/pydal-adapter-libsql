@@ -2,7 +2,7 @@ import locale
 import sys
 
 from pydal.adapters import adapters, SQLite
-import pyrqlite.dbapi2 as dbapi2
+from pyrqlite import dbapi2
 from urllib.parse import urlparse
 
 
