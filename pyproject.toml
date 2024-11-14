@@ -16,7 +16,10 @@ urls = { "Homepage" = "https://github.com/educationwarehouse/pydal-adapter-libsq
 
 dependencies = [
     "pydal",
-    "pylibsql", # todo
+    # "libsql-experimental", # official but experimental; slow install due to rust build
+    "libsql-client", # faster install, has dbapi2
+    # pylibsql (https://github.com/libsql/pylibsql) should implement dbapi2 but it isn't available on pypi
+    "dbapi2abc", # temporary
 ]
 
 [project.optional-dependencies]
@@ -24,6 +27,8 @@ dependencies = [
 dev = [
     "hatch",
     "python-semantic-release<8",
+    "su6[all]",
+    "testcontainers",
 ]
 
 [tool.setuptools.packages.find]
@@ -39,3 +44,6 @@ build_command = "hatch build"
 
 [tool.hatch.version]
 path = "pydal_libsql/__about__.py"
+
+[tool.hatch.metadata]
+allow-direct-references = true # allow github dependency

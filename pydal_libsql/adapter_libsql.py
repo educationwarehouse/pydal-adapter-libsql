@@ -1,61 +1,52 @@
-import locale
-import sys
+import warnings
+from pathlib import Path
 
-from pydal.adapters import adapters, SQLite
-from pyrqlite import dbapi2
-from urllib.parse import urlparse
+from libsql_client import dbapi2 as libsql_db2
+from pydal.adapters import SQLite, adapters
 
 
-@adapters.register_for("rqlite")
-class Rqlite(SQLite):
-    drivers = ("pyrqlite",)
-
-    def _initialize_(self):
-        self.pool_size = 0
-        # skip _initialize_ of SQLite, but do init it's super:
-        super(SQLite, self)._initialize_()
-
-        # self.dbpath = self.uri.split("://", 1)[1]
-
-        if "detect_types" not in self.driver_args:
-            self.driver_args["detect_types"] = self.driver.PARSE_DECLTYPES
+@adapters.register_for("libsql")
+class LibSQL(SQLite):
+    drivers = ("libsql_db2",)
 
     def find_driver(self):
         self.driver_name = self.drivers[0]
-        self.driver = dbapi2
+        self.driver = libsql_db2
 
-    def _extract_urlparts(self, conn_str):
-        info = urlparse(conn_str)
+    def _create_function_not_supported(self, *a, **kw):
+        warnings.warn("create_function used but sqld does not support this!")
 
-        return {
-            'host': info.hostname,
-            'user': info.username,
-            'password': info.password,
-            'port': info.port or '4001',
-        }
-
-    def connector(self):
+    def connector(self) -> libsql_db2.types.Connection:
         args = self.driver_args
-        if 'check_same_thread' in args:
-            del args['check_same_thread']
+        uri: str = self.uri
 
-        if 'https' in args:
-            scheme = 'https' if args['https'] else 'http'
-            del args['https']
-        else:
-            scheme = 'http'
+        if "auth_token" in args:
+            # not a local file
+            return SQLd.connector(self)
 
-        args.update(
-            # split dbpath to schema, host, post etc
-            self._extract_urlparts(self.uri)
-        )
+        # sqlite3-like file
+        uri = uri.removeprefix("libsql://").removeprefix("sqld://")
+        folder = Path(self.folder) if self.folder else Path.cwd()
+        uri_path = folder / uri
+        print("file", uri_path)
 
-        return self.driver.Connection(
-            scheme=scheme,
-            **args)
+        connection = self.driver.connect(uri_path, **args)
 
-    def after_connection(self):
-        # self._register_extract()
-        # self._register_regexp()
-        if self.adapter_args.get("foreign_keys", True):
-            self.execute("PRAGMA foreign_keys=ON;")
+        return connection
+
+
+@adapters.register_for("sqld")
+class SQLd(LibSQL):
+    def connector(self) -> libsql_db2.types.Connection:
+        args = self.driver_args
+        uri: str = self.uri
+
+        # if uri has :// it's an uri, otherwise it's a file path (absolute or relative)
+        uri = uri.removeprefix("libsql:").removeprefix("sqld:")
+        uri_path = uri.replace("//", "ws://")  # todo: wss?
+
+        connection = self.driver.connect(uri_path, **args)
+
+        connection.create_function = self._create_function_not_supported
+
+        return connection
